@@ -1,4 +1,4 @@
-import os
+"""Main Motd Flask App"""
 import random
 
 from flask import Flask, abort, render_template
@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fortune.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../fortune.db'
 db = SQLAlchemy(app)
 
 
@@ -45,17 +45,3 @@ def load_quotes(lines):
         message = Message(quote=line)
         db.session.add(message)
     db.session.commit()
-
-
-if __name__ == "__main__":
-    host = os.getenv('HOST', '0.0.0.0')
-    port = os.getenv('PORT', 5000)
-
-    try:
-        with open('quotes.txt') as quotes:
-            load_quotes(quotes.readlines())
-    except:
-        # No file, don't care
-        pass
-
-    app.run(host, port)
