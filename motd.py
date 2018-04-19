@@ -21,4 +21,12 @@ if __name__ == "__main__":
     host = os.getenv('HOST', '0.0.0.0')
     port = os.getenv('PORT', 5000)
 
+    try:
+        with open('quotes.txt') as quotes:
+            lines = quotes.readlines()
+            messages.extend(lines)
+    except:
+        # No file, don't care
+        pass
+
     app.run(host, port)
