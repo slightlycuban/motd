@@ -1,3 +1,5 @@
 env
 quotes.txt
 fortune.db
+.pytest_cache/
+.coverage

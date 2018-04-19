@@ -1,2 +1,7 @@
 Flask
 Flask-SQLAlchemy
+
+# Dev deps
+pytest
+pytest-cov
+mock
