@@ -25,23 +25,26 @@ def get_motd():
     return render_template('index.html', message=message.quote)
 
 
+def load_quotes(lines):
+    messages = Message.query.all()
+
+    existing = [m.quote for m in messages]
+    for line in lines:
+        if line in existing:
+            continue
+
+        message = Message(quote=line)
+        db.session.add(message)
+    db.session.commit()
+
+
 if __name__ == "__main__":
     host = os.getenv('HOST', '0.0.0.0')
     port = os.getenv('PORT', 5000)
 
     try:
         with open('quotes.txt') as quotes:
-            messages = Message.query.all()
-            lines = quotes.readlines()
-
-            existing = [m.quote for m in messages]
-            for line in lines:
-                if line in existing:
-                    continue
-
-                message = Message(quote=line)
-                db.session.add(message)
-            db.session.commit()
+            load_quotes(quotes.readlines())
     except:
         # No file, don't care
         pass
