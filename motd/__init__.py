@@ -1,19 +1,13 @@
 """Main Motd Flask App"""
-import random
-
 from flask import Flask, abort, render_template
 
 from motd.messages import db, get_quotes
+from motd.util import random_quote
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../fortune.db'
 db.init_app(app)
-
-
-def random_quote(messages):
-    pick_one = random.randint(0, len(messages) - 1)
-    return messages[pick_one]
 
 
 @app.route('/')

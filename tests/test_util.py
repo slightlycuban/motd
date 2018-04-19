@@ -1,6 +1,6 @@
 import pytest
 
-from motd import random_quote
+from motd.util import random_quote
 
 def test_random_quote_returns_quote(quote):
     rando = random_quote([quote])
