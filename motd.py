@@ -1,20 +1,28 @@
 import os
 import random
 
-from flask import Flask, render_template
+from flask import Flask, abort, render_template
+from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-messages = [
-    'What looks like a cat, flies like a bat, brays like a donkey, and plays like a monkey? A: Nothing.'
-]
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fortune.db'
+db = SQLAlchemy(app)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    quote = db.Column(db.String, unique=True, nullable=False)
 
 
 @app.route('/')
 def get_motd():
+    messages = Message.query.all()
+    if not messages:
+        abort(503)
     pick_one = random.randint(0, len(messages) - 1)
     message = messages[pick_one]
-    return render_template('index.html', message=message)
+    return render_template('index.html', message=message.quote)
 
 
 if __name__ == "__main__":
@@ -23,8 +31,17 @@ if __name__ == "__main__":
 
     try:
         with open('quotes.txt') as quotes:
+            messages = Message.query.all()
             lines = quotes.readlines()
-            messages.extend(lines)
+
+            existing = [m.quote for m in messages]
+            for line in lines:
+                if line in existing:
+                    continue
+
+                message = Message(quote=line)
+                db.session.add(message)
+            db.session.commit()
     except:
         # No file, don't care
         pass
