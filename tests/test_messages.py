@@ -1,16 +1,17 @@
 from mock import patch
 import pytest
 
-from motd import load_quotes, Message
+from motd import get_quotes, load_quotes, Message
 
 
-@pytest.fixture()
-def quote():
-    return 'single quote'
+class TestGetQuotes(object):
+    def test_get_quotes_returns_quotes(self, quote):
+        with patch('motd.Message.query') as mock_query:
+            mock_query.all.return_value = [Message(quote=quote)]
 
-@pytest.fixture()
-def double_quote():
-    return "double quotes"
+            quotes = get_quotes()
+
+            assert quotes == [quote], "should just return the quote"
 
 
 class TestLoadQuotes(object):

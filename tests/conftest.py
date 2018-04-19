@@ -7,3 +7,13 @@ from motd import app
 def client():
     app.testing = True
     return app.test_client()
+
+
+@pytest.fixture()
+def quote():
+    return 'single quote'
+
+
+@pytest.fixture()
+def double_quote():
+    return "double quotes"
