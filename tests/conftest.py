@@ -4,8 +4,13 @@ from motd import app
 
 
 @pytest.fixture()
-def client():
+def motd_app():
     app.testing = True
+    return app
+
+
+@pytest.fixture()
+def client(motd_app):
     return app.test_client()
 
 

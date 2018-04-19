@@ -1,7 +1,8 @@
 """Entrypoint to start & run MotD"""
 import os
 
-from motd import app, load_quotes
+from motd import app
+from motd.messages import load_quotes
 
 
 if __name__ == "__main__":

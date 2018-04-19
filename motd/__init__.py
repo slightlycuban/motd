@@ -2,22 +2,13 @@
 import random
 
 from flask import Flask, abort, render_template
-from flask_sqlalchemy import SQLAlchemy
+
+from motd.messages import db, get_quotes
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../fortune.db'
-db = SQLAlchemy(app)
-
-
-class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    quote = db.Column(db.String, unique=True, nullable=False)
-
-
-def get_quotes():
-    messages = Message.query.all()
-    return [m.quote for m in messages]
+db.init_app(app)
 
 
 def random_quote(messages):
@@ -34,14 +25,3 @@ def get_motd():
         # Either way, no quote today
         abort(503)
     return render_template('index.html', message=message)
-
-
-def load_quotes(lines):
-    existing = get_quotes()
-    for line in lines:
-        if line in existing:
-            continue
-
-        message = Message(quote=line)
-        db.session.add(message)
-    db.session.commit()
